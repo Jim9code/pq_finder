@@ -124,12 +124,6 @@
 						<span class="relative z-10">Find Past Questions</span>
 						<div class="absolute inset-0 bg-gradient-to-r from-[#1E40AF] to-[#2563EB] opacity-0 group-hover:opacity-100 transition-opacity"></div>
 					</button>
-					<button
-						onclick={() => goto('/auth/signup')}
-						class="px-8 py-4 bg-white text-[#1E3A8A] border-2 border-[#1E3A8A] rounded-lg hover:bg-[#1E3A8A] hover:text-white hover:shadow-xl font-semibold text-lg transition-all library-card"
-					>
-						Upload & Earn
-					</button>
 				</div>
 			</div>
 		</div>

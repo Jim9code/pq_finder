@@ -4,6 +4,7 @@
 	import PQCard from '$lib/components/PQCard.svelte';
 	import AdBoard from '$lib/components/AdBoard.svelte';
 	import { mockPQs } from '$lib/stores/mockData';
+	import { userStore } from '$lib/stores/userStore';
 	import { DollarSign, TrendingUp, FileText, CheckCircle2 } from 'lucide-svelte';
 
 	// Mock user data
@@ -13,6 +14,16 @@
 	const verifiedPQs = 8;
 
 	const userPQs = mockPQs.slice(0, 5);
+
+	const user = $derived.by(() => {
+		let currentUser = null;
+		userStore.subscribe((value) => {
+			currentUser = value;
+		})();
+		return currentUser;
+	});
+
+	const isAdmin = $derived(user?.role === 'admin');
 
 	let sidebarOpen = $state(false);
 
@@ -88,49 +99,65 @@
 				</div>
 			</div>
 
-			<!-- Withdrawal Request -->
-			<div class="bg-[#E2E8F0] rounded-xl p-6 shadow-md paper-texture">
-				<div class="flex items-center justify-between mb-4">
-					<h2 class="text-xl font-semibold text-[#1E3A8A]">Withdrawal Request</h2>
-					<DollarSign size={24} class="text-[#1E3A8A]" />
-				</div>
-				<p class="text-gray-600 mb-4">
-					Your current balance: <span class="font-semibold">₦{userBalance.toLocaleString()}</span>
-				</p>
-				<p class="text-sm text-gray-600 mb-4">
-					Minimum withdrawal threshold: ₦5,000
-				</p>
-				{#if userBalance >= 5000}
-					<button
-						class="px-6 py-3 bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-white rounded-lg hover:shadow-lg font-medium"
-						type="button"
-					>
-						Request Withdrawal
-					</button>
-				{:else}
-					<p class="text-sm text-orange-600">
-						You need ₦{(5000 - userBalance).toLocaleString()} more to reach the withdrawal threshold.
+			{#if isAdmin}
+				<!-- Withdrawal Request -->
+				<div class="bg-[#E2E8F0] rounded-xl p-6 shadow-md paper-texture">
+					<div class="flex items-center justify-between mb-4">
+						<h2 class="text-xl font-semibold text-[#1E3A8A]">Withdrawal Request</h2>
+						<DollarSign size={24} class="text-[#1E3A8A]" />
+					</div>
+					<p class="text-gray-600 mb-4">
+						Your current balance: <span class="font-semibold">₦{userBalance.toLocaleString()}</span>
 					</p>
-				{/if}
-			</div>
-
-			<!-- My Uploads -->
-			<div>
-				<h2 class="text-2xl font-bold text-[#1E3A8A] mb-6">My Uploads</h2>
-				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-					{#each userPQs as pq}
-						<PQCard {pq} />
-					{/each}
+					<p class="text-sm text-gray-600 mb-4">
+						Minimum withdrawal threshold: ₦5,000
+					</p>
+					{#if userBalance >= 5000}
+						<button
+							class="px-6 py-3 bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-white rounded-lg hover:shadow-lg font-medium"
+							type="button"
+						>
+							Request Withdrawal
+						</button>
+					{:else}
+						<p class="text-sm text-orange-600">
+							You need ₦{(5000 - userBalance).toLocaleString()} more to reach the withdrawal threshold.
+						</p>
+					{/if}
 				</div>
-				<div class="mt-6 text-center">
+
+				<!-- My Uploads -->
+				<div>
+					<h2 class="text-2xl font-bold text-[#1E3A8A] mb-6">My Uploads</h2>
+					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+						{#each userPQs as pq}
+							<PQCard {pq} />
+						{/each}
+					</div>
+					<div class="mt-6 text-center">
+						<a
+							href="/dashboard/upload"
+							class="inline-block px-6 py-3 bg-[#1E3A8A] text-white rounded-lg hover:bg-[#1E40AF] font-medium"
+						>
+							Upload New PQ
+						</a>
+					</div>
+				</div>
+			{:else}
+				<!-- Student View -->
+				<div class="bg-[#E2E8F0] rounded-xl p-8 shadow-md paper-texture text-center">
+					<h2 class="text-2xl font-bold text-[#1E3A8A] mb-4">Welcome, Student!</h2>
+					<p class="text-gray-600 mb-6">
+						You can browse and download past questions. Only administrators can upload new questions.
+					</p>
 					<a
-						href="/dashboard/upload"
-						class="inline-block px-6 py-3 bg-[#1E3A8A] text-white rounded-lg hover:bg-[#1E40AF] font-medium"
+						href="/pqs"
+						class="inline-block px-6 py-3 bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] text-white rounded-lg hover:shadow-lg font-medium"
 					>
-						Upload New PQ
+						Browse Past Questions
 					</a>
 				</div>
-			</div>
+			{/if}
 
 			<!-- Ad Board -->
 			<div class="mt-8">

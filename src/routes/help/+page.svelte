@@ -17,14 +17,14 @@
 			answer: 'Yes! All past questions are completely free for students to download and use.'
 		},
 		{
-			question: 'How do I become an uploader?',
+			question: 'Who can upload past questions?',
 			answer:
-				'Simply click "Upload & Earn" or "Become an Uploader" and sign up. Once verified, you can start uploading past questions and earning.'
+				'Only administrators can upload past questions. Students can browse and download past questions for free.'
 		},
 		{
-			question: 'How do I earn as an uploader?',
+			question: 'How do I become an administrator?',
 			answer:
-				'When your uploaded past questions are verified and downloaded by students, you earn income. You can withdraw once you reach the minimum threshold (₦5,000).'
+				'Administrator accounts are managed by the platform. If you need to upload questions, please contact support for administrator access.'
 		},
 		{
 			question: 'What file formats are accepted?',

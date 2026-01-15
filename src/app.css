@@ -2,10 +2,6 @@
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 
-/* Ensure Tailwind utilities are loaded */
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
-
 :root {
 	--color-primary: #1e3a8a;
 	--color-accent: #22c55e;

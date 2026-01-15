@@ -18,7 +18,7 @@ export interface User {
 	email: string;
 	school?: string;
 	balance: number;
-	role: 'student' | 'uploader';
+	role: 'student' | 'admin';
 }
 
 export interface SearchFilters {

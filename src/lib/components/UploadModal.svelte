@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { X, Upload as UploadIcon, FileText } from 'lucide-svelte';
+	import { userStore } from '$lib/stores/userStore';
 
 	interface Props {
 		open: boolean;
@@ -7,6 +8,16 @@
 	}
 
 	let { open = false, onClose }: Props = $props();
+
+	const user = $derived.by(() => {
+		let currentUser = null;
+		userStore.subscribe((value) => {
+			currentUser = value;
+		})();
+		return currentUser;
+	});
+
+	const isAdmin = $derived(user?.role === 'admin');
 
 	let university = $state('');
 	let course = $state('');
@@ -45,6 +56,12 @@
 
 	async function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();
+		
+		if (!isAdmin) {
+			alert('Only administrators can upload past questions.');
+			return;
+		}
+
 		if (!file || !university || !course || !level || !year) {
 			alert('Please fill in all required fields');
 			return;

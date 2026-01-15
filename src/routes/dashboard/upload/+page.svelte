@@ -1,11 +1,28 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import DashboardSidebar from '$lib/components/DashboardSidebar.svelte';
 	import MobileMenuButton from '$lib/components/MobileMenuButton.svelte';
 	import UploadModal from '$lib/components/UploadModal.svelte';
 	import AdBoard from '$lib/components/AdBoard.svelte';
+	import { userStore } from '$lib/stores/userStore';
 
 	let showUploadModal = $state(false);
 	let sidebarOpen = $state(false);
+
+	const user = $derived.by(() => {
+		let currentUser = null;
+		userStore.subscribe((value) => {
+			currentUser = value;
+		})();
+		return currentUser;
+	});
+
+	const isAdmin = $derived(user?.role === 'admin');
+
+	// Redirect non-admins
+	if (!isAdmin) {
+		goto('/dashboard');
+	}
 
 	function toggleSidebar() {
 		sidebarOpen = !sidebarOpen;

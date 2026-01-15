@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { userStore, canUpload } from '$lib/stores/userStore';
 	import { FileText, Upload, DollarSign, Settings, LayoutDashboard, X } from 'lucide-svelte';
 
 	interface Props {
@@ -9,13 +10,33 @@
 
 	let { open = false, onClose }: Props = $props();
 
-	const menuItems = [
-		{ icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
-		{ icon: FileText, label: 'My Uploads', href: '/dashboard/uploads' },
-		{ icon: Upload, label: 'Upload PQ', href: '/dashboard/upload' },
-		{ icon: DollarSign, label: 'Earnings', href: '/dashboard/earnings' },
-		{ icon: Settings, label: 'Settings', href: '/settings' }
-	];
+	const user = $derived.by(() => {
+		let currentUser = null;
+		userStore.subscribe((value) => {
+			currentUser = value;
+		})();
+		return currentUser;
+	});
+
+	const isAdmin = $derived(user?.role === 'admin');
+
+	const menuItems = $derived.by(() => {
+		const items = [
+			{ icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' }
+		];
+		
+		// Only show upload-related items for admins
+		if (isAdmin) {
+			items.push(
+				{ icon: FileText, label: 'My Uploads', href: '/dashboard/uploads' },
+				{ icon: Upload, label: 'Upload PQ', href: '/dashboard/upload' },
+				{ icon: DollarSign, label: 'Earnings', href: '/dashboard/earnings' }
+			);
+		}
+		
+		items.push({ icon: Settings, label: 'Settings', href: '/settings' });
+		return items;
+	});
 
 	function isActive(href: string): boolean {
 		return $page.url.pathname === href || $page.url.pathname.startsWith(href + '/');
